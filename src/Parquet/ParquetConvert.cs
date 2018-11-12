@@ -26,11 +26,12 @@ namespace Parquet
       /// <param name="compressionMethod"><see cref="CompressionMethod"/></param>
       /// <param name="rowGroupSize"></param>
       /// <param name="append">Add to the current stream</param>
+      /// <param name="options">the default parquet options</param>
       /// <returns></returns>
       public static Schema Serialize<T>(IEnumerable<T> objectInstances, Stream destination,
          Schema schema = null,
          CompressionMethod compressionMethod = CompressionMethod.Snappy,
-         int rowGroupSize = 5000, bool append = false)
+         int rowGroupSize = 5000, bool append = false, ParquetOptions options = null)
          where T : new()
       {
          if (objectInstances == null) throw new ArgumentNullException(nameof(objectInstances));
@@ -43,7 +44,7 @@ namespace Parquet
             schema = SchemaReflector.Reflect<T>();
          }
 
-         using (var writer = new ParquetWriter(schema, destination, null, append))
+         using (var writer = new ParquetWriter(schema, destination, options, append))
          {
             writer.CompressionMethod = compressionMethod;
 
