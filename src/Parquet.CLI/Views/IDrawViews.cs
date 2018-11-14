@@ -5,8 +5,8 @@ using Parquet.CLI.Models;
 
 namespace Parquet.CLI.Views
 {
-   interface IDrawViews
+   interface IDrawViews<TViewModel>
    {
-      void Draw(ViewModel viewModel, ViewSettings settings);
+      void Draw(TViewModel viewModel, ViewSettings settings);
    }
 }

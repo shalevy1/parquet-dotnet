@@ -11,7 +11,7 @@ using Parquet.Data.Rows;
 namespace Parquet.CLI.Commands
 {
     class DisplayFullCommand<TViewType> : FileInputCommand
-                              where TViewType : IDrawViews, new()
+                              where TViewType : IDrawViews<ViewModel>, new()
     {
       private readonly string _path;
 

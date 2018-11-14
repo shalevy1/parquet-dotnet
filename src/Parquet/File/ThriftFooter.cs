@@ -141,6 +141,26 @@ namespace Parquet.File
          return rg;
       }
 
+      internal Metadata CreateMetadata()
+      {
+         var metadata = new Metadata();
+         metadata.Version = _fileMeta.Version;
+         metadata.Num_rows = _fileMeta.Num_rows;
+         metadata.Has_created_by = _fileMeta.__isset.created_by;
+         if (metadata.Has_created_by)
+         {
+            metadata.Created_by = _fileMeta.Created_by;
+         }
+         metadata.Has_key_value_metadata = _fileMeta.__isset.key_value_metadata;
+         if (metadata.Has_key_value_metadata)
+         {
+            metadata.Key_value_metadata = _fileMeta.Key_value_metadata.Select(kv => new KeyValuePair<string, string>(kv.Key, kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value);
+         }
+
+         metadata.RowGroups = _fileMeta.Row_groups.Select(rg => new RowGroup { RowCount = rg.Num_rows, TotalByteSize = rg.Total_byte_size }).ToList();
+         return metadata;
+      }
+
       public Thrift.ColumnChunk CreateColumnChunk(CompressionMethod compression, Stream output, Thrift.Type columnType, List<string> path, int valuesCount)
       {
          Thrift.CompressionCodec codec = DataFactory.GetThriftCompression(compression);

@@ -9,7 +9,7 @@ namespace Parquet.CLI.Views
    /// <summary>
    /// Displays to the Console window a navigatable (2D) data set
    /// </summary>
-   public class InteractiveConsoleView : IDrawViews
+   public class InteractiveConsoleView : IDrawViews<ViewModel>
    {
       private const string verticalSeparator = "|";
       private const string horizontalSeparator = "-";

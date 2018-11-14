@@ -61,6 +61,19 @@ namespace Parquet.CLI
             });
          });
 
+         app.Command("metadata", cmd =>
+         {
+            cmd.Description = "This will go in resources!";
+
+            LinePrimitive<string> path = cmd.Argument<string>("path", Help.Argument_Path).Required();
+            cmd.OnExecute(() =>
+            {
+               new MetadataCommand<Views.MetadataView>(path).Execute(new ViewSettings());
+               Console.ReadLine();
+            });
+
+         });
+
          app.Command("convert", cmd =>
          {
             cmd.Description = Help.Command_Convert_Description;
