@@ -7,7 +7,7 @@ using Parquet.Data;
 using Parquet.Data.Rows;
 using Xunit;
 
-namespace Parquet.Test
+namespace Parquet.Test.Rows
 {
    public class RowsModelTest : TestBase
    {
@@ -231,6 +231,21 @@ namespace Parquet.Test
       #endregion
 
       #region [ List ]
+
+      [Fact]
+      public void List_table_equality()
+      {
+         var schema = new Schema(new ListField("ints", new DataField<int>("int")));
+
+
+         var tbl1 = new Table(schema);
+         tbl1.Add(Row.SingleCell(new[] { 1, 1, 1 }));
+
+         var tbl2 = new Table(schema);
+         tbl2.Add(Row.SingleCell(new[] { 1, 1, 1 }));
+
+         Assert.True(tbl1.Equals(tbl2, true));
+      }
 
       [Fact]
       public void List_read_simple_element_from_Apache_Spark()
