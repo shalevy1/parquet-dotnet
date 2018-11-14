@@ -7,114 +7,63 @@ namespace Parquet.Test
 {
    public class ParquetReaderOnTestFilesMetadataTest : TestBase
    {
-      [Fact]
-      public void Version()
+      private Metadata _m;
+
+      public ParquetReaderOnTestFilesMetadataTest()
       {
          using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
          {
             using (var r = new ParquetReader(s))
             {
-               Metadata m = r.Metadata;
-               Assert.Equal(1, m.Version);
+               _m = r.Metadata;
             }
          }
+      }
+      [Fact]
+      public void Version()
+      {
+         Assert.Equal(1, _m.Version);
       }
 
       [Fact]
       public void Num_rows()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.Equal(2, m.Num_rows);
-            }
-         }
+         Assert.Equal(2, _m.Num_rows);
       }
       [Fact]
       public void Created_by()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.Equal("parquet-mr version 1.8.1 (build 4aba4dae7bb0d4edbcf7923ae1339f28fd3f7fcf)", m.Created_by);
-            }
-         }
+         Assert.Equal("parquet-mr version 1.8.1 (build 4aba4dae7bb0d4edbcf7923ae1339f28fd3f7fcf)", _m.Created_by);
       }
       [Fact]
       public void Isset_Metadata()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.True(m.Has_key_value_metadata);
-            }
-         }
+         Assert.True(_m.Has_key_value_metadata);
       }
       [Fact]
       public void Isset_CreatedBy()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.True(m.Has_created_by);
-            }
-         }
+         Assert.True(_m.Has_created_by);
       }
       [Fact]
       public void MetadataKV()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.True(m.Key_value_metadata.Any());
-            }
-         }
+         Assert.True(_m.Key_value_metadata.Any());
       }
       [Fact]
       public void RowGroups()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.True(m.RowGroups.Any());
-            }
-         }
+         Assert.True(_m.RowGroups.Any());
       }
       [Fact]
       public void RowGroups_Rows()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.Equal(2, m.RowGroups[0].RowCount);
-            }
-         }
+         Assert.Equal(2, _m.RowGroups[0].RowCount);
       }
       [Fact]
       public void RowGroups_bytes()
       {
-         using (Stream s = OpenTestFile("fixedlenbytearray.parquet"))
-         {
-            using (var r = new ParquetReader(s))
-            {
-               Metadata m = r.Metadata;
-               Assert.Equal(67, m.RowGroups[0].TotalByteSize);
-            }
-         }
+         Assert.Equal(67, _m.RowGroups[0].TotalByteSize);
       }
    }
 }
