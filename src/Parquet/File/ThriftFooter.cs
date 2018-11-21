@@ -157,7 +157,38 @@ namespace Parquet.File
             metadata.Key_value_metadata = _fileMeta.Key_value_metadata.Select(kv => new KeyValuePair<string, string>(kv.Key, kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value);
          }
 
-         metadata.RowGroups = _fileMeta.Row_groups.Select(rg => new RowGroup { RowCount = rg.Num_rows, TotalByteSize = rg.Total_byte_size }).ToList();
+         metadata.RowGroups = _fileMeta.Row_groups.Select(
+            rg => new RowGroup {
+               RowCount = rg.Num_rows,
+               TotalByteSize = rg.Total_byte_size,
+               Columns = rg.Columns.Select(
+                  c => new ColumnChunk
+                  {
+                     FileOffset = c.File_offset,
+                     FilePath = c.File_path,
+                     Metadata = new ColumnMetadata
+                     {
+                        Codec = c.Meta_data.Codec.ToString(),
+                        Data_page_offset = c.Meta_data.Data_page_offset,
+                        Dictionary_page_offset = c.Meta_data.Dictionary_page_offset,
+                        Encodings = c.Meta_data.Encodings.Select(e => e.ToString()).ToList(),
+                        //Encoding_stats = c.Meta_data.Encoding_stats
+                        Key_value_metadata = c.Meta_data.Key_value_metadata == null ? new Dictionary<string, string>() : c.Meta_data.Key_value_metadata.Select(kv => new KeyValuePair<string, string>(kv.Key, kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value),
+                        Num_values = c.Meta_data.Num_values,
+                        Path_in_schema = c.Meta_data.Path_in_schema,
+                        Statistics = new Statistics
+                        {
+                           Distinct_count = c.Meta_data.Statistics.Distinct_count,
+                           Max = c.Meta_data.Statistics.Max,
+                           Min = c.Meta_data.Statistics.Min,
+                           Null_count = c.Meta_data.Statistics.Null_count
+                        },
+                        Total_compressed_size = c.Meta_data.Total_compressed_size,
+                        Total_uncompressed_size = c.Meta_data.Total_uncompressed_size,
+                        Type = c.Meta_data.Type.ToString()
+                     }
+                  }).ToList()
+            }).ToList();
          return metadata;
       }
 

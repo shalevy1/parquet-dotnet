@@ -19,5 +19,13 @@ namespace Parquet.Data
       /// Byte offset in file_path to the ColumnMetaData *
       /// </summary>
       public long FileOffset { get; set; }
+
+
+      /// <summary>
+      /// Column metadata for this chunk. This is the same content as what is at
+      /// file_path/file_offset.  Having it here has it replicated in the file
+      /// metadata.
+      /// </summary>
+      public ColumnMetadata Metadata { get; set; }
    }
 }

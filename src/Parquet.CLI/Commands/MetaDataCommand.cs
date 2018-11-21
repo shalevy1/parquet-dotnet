@@ -11,7 +11,7 @@ using Parquet.Data.Rows;
 
 namespace Parquet.CLI.Commands
 {
-    class MetadataCommand<TViewType>
+    class MetadataCommand<TViewType> where TViewType : IDrawViews<Metadata>, new()
     {
       private readonly string _path;
 
@@ -31,7 +31,7 @@ namespace Parquet.CLI.Commands
             {
                Metadata metadata = reader.Metadata;
 
-               new MetadataView().Draw(metadata, settings);
+               new TViewType().Draw(metadata, settings);
             }
          }
       }
