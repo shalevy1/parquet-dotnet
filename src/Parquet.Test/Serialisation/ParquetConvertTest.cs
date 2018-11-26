@@ -46,6 +46,42 @@ namespace Parquet.Test.Serialisation
       }
 
       [Fact]
+      public void Serialise_deserialise_with_append()
+      {
+         DateTime now = DateTime.Now;
+
+         IEnumerable<SimpleStructure> structures = Enumerable
+            .Range(0, 10)
+            .Select(i => new SimpleStructure
+            {
+               Id = i,
+               NullableId = (i % 2 == 0) ? new int?() : new int?(i),
+               Name = $"row {i}",
+               Date = now.AddDays(i).RoundToSecond().ToUniversalTime()
+            });
+
+         using (var ms = new MemoryStream())
+         {
+            Schema schema = ParquetConvert.Serialize(structures, ms, compressionMethod: CompressionMethod.Snappy, rowGroupSize: 5, append: false);
+            schema = ParquetConvert.Serialize(structures, ms, compressionMethod: CompressionMethod.Snappy, rowGroupSize: 5, append: true);
+
+            ms.Position = 0;
+
+            SimpleStructure[] structures2 = ParquetConvert.Deserialize<SimpleStructure>(ms);
+
+            SimpleStructure[] structuresArray = structures.ToArray();
+            for (int i = 0; i < 10; i++)
+            {
+               Assert.Equal(structuresArray[i].Id, structures2[i].Id);
+               Assert.Equal(structuresArray[i].NullableId, structures2[i].NullableId);
+               Assert.Equal(structuresArray[i].Name, structures2[i].Name);
+               Assert.Equal(structuresArray[i].Date, structures2[i].Date);
+            }
+
+         }
+      }
+
+      [Fact]
       public void Serialize_deserialize_repeated_field()
       {
          IEnumerable<SimpleRepeated> structures = Enumerable
