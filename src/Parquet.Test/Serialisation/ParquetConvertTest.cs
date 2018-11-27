@@ -48,6 +48,7 @@ namespace Parquet.Test.Serialisation
       [Fact]
       public void Serialise_deserialise_with_append()
       {
+         // TODO: This test is all wrong changing 
          DateTime now = DateTime.Now;
 
          IEnumerable<SimpleStructure> structures = Enumerable
@@ -64,12 +65,13 @@ namespace Parquet.Test.Serialisation
          {
             Schema schema = ParquetConvert.Serialize(structures, ms, compressionMethod: CompressionMethod.Snappy, rowGroupSize: 5, append: false);
             schema = ParquetConvert.Serialize(structures, ms, compressionMethod: CompressionMethod.Snappy, rowGroupSize: 5, append: true);
-
+            
             ms.Position = 0;
 
             SimpleStructure[] structures2 = ParquetConvert.Deserialize<SimpleStructure>(ms);
 
             SimpleStructure[] structuresArray = structures.ToArray();
+            Assert.Equal(10, structuresArray.Length);
             for (int i = 0; i < 10; i++)
             {
                Assert.Equal(structuresArray[i].Id, structures2[i].Id);
